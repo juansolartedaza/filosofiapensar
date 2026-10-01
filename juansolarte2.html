@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiPensamiento - Portal de Filosofía y Ciencia</title>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #8b5cf6;
+            --bg-body: #f1f5f9;
+            --text-main: #334155;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Header con barra de navegación */
+        header {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #ffffff;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #38bdf8;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        nav a:hover {
+            color: #38bdf8;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-auth {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-auth-outline {
+            background: transparent;
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+        }
+
+        .btn-auth-outline:hover {
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .toggle-auth-link {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Contenedor Principal */
+        .main-container {
+            max-width: 1100px;
+            margin: 30px auto;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .header-image-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-image-container img.main-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 380px;
+            border-radius: 16px;
+            padding: 8px;
+            background: linear-gradient(135deg, #2563eb, #8b5cf6, #ec4899);
+            box-shadow: 0 12px 25px rgba(37, 99, 235, 0.2);
+            display: block;
+            margin: 0 auto;
+        }
+
+        h1.site-title {
+            font-family: 'Georgia', serif;
+            font-size: 2.1rem;
+            color: #0f172a;
+            margin-top: 0;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .tagline {
+            font-style: italic;
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* Banner de Modo Editor */
+        #admin-bar {
+            display: none;
+            background: #fffbebf5;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        /* Decoración: Estadísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .stat-card i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-card .number {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #0f172a;
+        }
+
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* Ficha Informativa Lateral */
+        .infobox {
+            float: right;
+            width: 280px;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 0 0 20px 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+            font-size: 0.88rem;
+        }
+
+        .infobox-title {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.95rem;
+            padding: 8px;
+            margin: -15px -15px 15px -15px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .infobox table td {
+            padding: 4px 0;
+        }
+
+        /* Tarjetas de Contenido */
+        .content-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .content-card h3 {
+            margin-top: 0;
+            color: #0f172a;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .delete-btn {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        blockquote {
+            background: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            margin: 15px 0;
+            padding: 12px 18px;
+            font-style: italic;
+            font-size: 0.95rem;
+            color: #0369a1;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .thought-experiment {
+            background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+            border: 1px solid #c084fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .thought-title {
+            color: #6b21a8;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        section h2 {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            color: #0f172a;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        footer {
+            text-align: center;
+            color: #94a3b8;
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado con Navegación y Control de Sesión -->
+    <header>
+        <a href="#" class="logo"><i class="fa-solid fa-atom"></i> WikiPensamiento</a>
+        <nav>
+            <a href="#filosofia">Filosofía</a>
+            <a href="#experimentos">Experimentos</a>
+            <a href="#ciencia">Física & Cosmos</a>
+            <a href="#epistemologia">Epistemología</a>
+            
+            <div class="auth-buttons" id="nav-auth-container">
+                <button class="btn-auth btn-auth-outline" onclick="openModal('login-modal')">
+                    <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+                </button>
+                <button class="btn-auth" onclick="openModal('signup-modal')">
+                    <i class="fa-solid fa-user-plus"></i> Registrarse
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-container">
+
+        <!-- Imagen de Portada -->
+        <div class="header-image-container">
+            <img src="imagen.jpg" alt="Filosofía y Ciencia" class="main-img">
+        </div>
+
+        <h1 class="site-title">El Cosmos de la Mente: Filosofía y Ciencia</h1>
+        <div class="tagline">Un espacio interactivo para reflexionar, analizar paradojas y explorar el conocimiento.</div>
+
+        <!-- Decoración: Tarjetas de Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fa-solid fa-book"></i>
+                <div class="number">4 Secciones</div>
+                <div class="label">Categorías Principales</div>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-brain"></i>
+                <div class="number">10+ Temas</div>
+                <div class="label">Artículos Seleccionados</div>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-user-gear"></i>
+                <div class="number">Interactivo</div>
+                <div class="label">Publica o Elimina</div>
+            </div>
+        </div>
+
+        <!-- Banner Modo Editor -->
+        <div id="admin-bar">
+            <span><i class="fa-solid fa-user-check"></i> <strong id="welcome-user-text">Modo Editor Activo:</strong> Tienes permiso para agregar nuevos artículos o eliminar existentes.</span>
+            <button class="btn-auth" onclick="openModal('add-modal')"><i class="fa-solid fa-plus"></i> Publicar Artículo</button>
+        </div>
+
+        <!-- Ficha Informativa Lateral -->
+        <div class="infobox">
+            <div class="infobox-title"><i class="fa-solid fa-compass"></i> Ficha del Portal</div>
+            <table style="width: 100%;">
+                <tr><td><strong>Áreas:</strong></td><td>Física, Ética, Metafísica</td></tr>
+                <tr><td><strong>Enfoque:</strong></td><td>Divulgación y Debate</td></tr>
+                <tr><td><strong>Modo:</strong></td><td>Edición en Tiempo Real</td></tr>
+                <tr><td><strong>Estatus:</strong></td><td>Comunidad Activa</td></tr>
+            </table>
+        </div>
+
+        <!-- Sección 1: Filosofía -->
+        <section id="filosofia">
+            <h2><i class="fa-solid fa-book-open"></i> Grandes Corrientes Filosóficas</h2>
+
+            <div class="content-card">
+                <button class="delete-btn" onclick="deleteCard(this)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <h3>El Dilema de la Realidad: Platón vs. Aristóteles</h3>
+                <p>Para <strong>Platón</strong>, los objetos del mundo sensible no son más que sombras de una realidad verdadera e inmutable situada en el <em>Mundo de las Ideas</em>. En su Alegoría de la Caverna nos recuerda que vivimos atados a apariencias hasta que el pensamiento racional nos conduce a la verdad.</p>
+                <p><strong>Aristóteles</strong>, en cambio, defendió el estudio del mundo físico mediante la observación empírica. Propuso la teoría del hilemorfismo (materia y forma) y las <i>Cuatro Causas</i> (Material, Formal, Eficiente y Final) para explicar la existencia de todo fenómeno natural.</p>
+                <blockquote>"La intelligence no consiste solo en el conocimiento, sino también en la destreza de aplicar los conocimientos en la práctica." — Aristóteles</blockquote>
+            </div>
+
+            <div class="content-card">
+                <button class="delete-btn" onclick="deleteCard(this)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <h3>Existencialismo: Libertad, Sentido y Elección</h3>
+                <p><strong>Jean-Paul Sartre</strong> sostuvo que <i>"la existencia precede a la esencia"</i>, proponiendo que los seres humanos no nacemos con una función predeterminada. Somos libres de definir nuestro destino mediante cada elección, lo que a su vez conlleva la profunda responsabilidad de hacernos cargo de nuestras vidas.</p>
+                <p><strong>Friedrich Nietzsche</strong> celebró la capacidad humana de superar el nihilismo construyendo nuestros propios valores personales mediante el desarrollo de la voluntad de poder y el libre pensamiento.</p>
+            </div>
+
+            <div class="content-card">
+                <button class="delete-btn" onclick="deleteCard(this)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <h3>Racionalismo y Empirismo: Las Raíces del Saber</h3>
+                <p>El choque intelectual entre <strong>René Descartes</strong> (Racionalismo) y <strong>John Locke</strong> (Empirismo) transformó la filosofía moderna. Mientras Descartes buscaba certezas indudables a través de la duda metódica y la razón (<em>"Pienso, luego existo"</em>), Locke argumentaba que la mente al nacer es una <i>tabula rasa</i> (hoja en blanco) y que todo conocimiento proviene directamente de la experiencia sensorial.</p>
+            </div>
+        </section>
+
+        <!-- Sección 2: Experimentos Mentales -->
+        <section id="experimentos">
+            <h2><i class="fa-solid fa-flask"></i> Laboratorio de Pensamiento</h2>
+
+            <div class="thought-experiment">
+                <div class="thought-title"><i class="fa-solid fa-lightbulb"></i> El Cerebro en una Cubeta</div>
+                <p>Supón que un científico ha extraído tu cerebro y lo mantiene con vida en un recipiente con nutrientes, conectado a un ordenador que simula perfectamente toda la información de tus sentidos. Sientes que lees esta pantalla, pero solo son impulsos eléctricos. <strong>¿Cómo demostrarías que esta experiencia es real y no una simulación?</strong></p>
+            </div>
+
+            <div class="thought-experiment" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-color: #86efac;">
+                <div class="thought-title" style="color: #166534;"><i class="fa-solid fa-ship"></i> La Paradoja del Barco de Teseo</div>
+                <p>A medida que las maderas del barco de Teseo se desgastaban, iban siendo reemplazadas una por una. Al cabo del tiempo, ninguna pieza original permanecía. <strong>¿Sigue siendo el mismo barco?</strong> Si reuniéramos las piezas viejas y armáramos otro barco, ¿cuál de los dos tendría la verdadera identidad?</p>
+            </div>
+
+            <div class="thought-experiment" style="background: linear-gradient(135deg, #fef2f2, #ffe4e6); border-color: #f43f5e;">
+                <div class="thought-title" style="color: #9f1239;"><i class="fa-solid fa-cat"></i> El Gato de Schrödinger</div>
+                <p>Un gato es colocado dentro de una caja sellada junto con un mecanismo cuántico que tiene un 50% de probabilidades de liberar veneno. Mientras la caja permanezca cerrada, la física cuántica describe al gato mediante un estado de <strong>superposición</strong>: está vivo y muerto al mismo tiempo hasta que un observador abra la caja y fuerce un resultado definitivo.</p>
+            </div>
+        </section>
+
+        <!-- Sección 3: Ciencia y Física -->
+        <section id="ciencia">
+            <h2><i class="fa-solid fa-atom"></i> Física Moderna y Cosmología</h2>
+
+            <div class="content-card">
+                <button class="delete-btn" onclick="deleteCard(this)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <h3>Mecánica Cuántica y Dualidad Onda-Partícula</h3>
+                <p>A nivel subatómico, la materia muestra un comportamiento dual: los electrones y fotones pueden actuar como partículas o como ondas dependiendo de cómo se midan. Fenómenos como el <em>entrelazamiento cuántico</em> revelan conexiones instantáneas entre partículas distantes, desafiando nuestras nociones intuitivas de espacio y tiempo.</p>
+            </div>
+
+            <div class="content-card">
+                <button class="delete-btn" onclick="deleteCard(this)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <h3>Relatividad General: El Tejido del Espacio-Tiempo</h3>
+                <p>Albert Einstein demostró que la gravedad no es simplemente una fuerza de atracción, sino la consecuencia de la curvatura del <strong>espacio-tiempo</strong> generada por masas elevadas como planetas y estrellas. Cerca de campos gravitatorios intensos, incluso el paso del tiempo se frena sensiblemente.</p>
+            </div>
+
+            <div class="content-card">
+                <button class="delete-btn" onclick="deleteCard(this)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <h3>La Expansión del Universo y la Energía Oscura</h3>
+                <p>Las observaciones astronómicas demuestran que las galaxias se están alejando unas de otras a un ritmo acelerado. Los astrofísicos atribuyen este fenómeno a la <strong>energía oscura</strong>, una fuerza misteriosa que compone aproximadamente el 68% del cosmos y que actúa en contraposición a la atracción gravitatoria.</p>
+            </div>
+        </section>
+
+        <!-- Sección 4: Epistemología -->
+        <section id="epistemologia">
+            <h2><i class="fa-solid fa-graduation-cap"></i> Epistemología y Método Científico</h2>
+
+            <div class="content-card">
+                <button class="delete-btn" onclick="deleteCard(this)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <h3>Falsacionismo de Karl Popper</h3>
+                <p>Para Karl Popper, una teoría no se convierte en científica por ser confirmada constantemente, sino por ser <strong>falsable</strong>; es decir, por ser capaz de formular predicciones concretas que puedan someterse a prueba y eventualmente descartarse si los datos la contradicen.</p>
+            </div>
+
+            <div class="content-card">
+                <button class="delete-btn" onclick="deleteCard(this)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <h3>Las Revoluciones Científicas de Thomas Kuhn</h3>
+                <p>Thomas Kuhn argumentó que la ciencia no avanza solo de forma lineal acumulando datos, sino mediante <strong>cambios de paradigma</strong>. Cuando una corriente científica enfrenta demasiadas anomalías irresolubles, ocurre una revolución que transforma por completo la manera en que los científicos entienden el universo.</p>
+            </div>
+        </section>
+
+        <!-- Contenedor Dinámico para Nuevos Artículos -->
+        <div id="dynamic-content-container"></div>
+
+        <footer>
+            <p><i class="fa-solid fa-copyright"></i> WikiPensamiento - Plataforma Educativa e Interactiva 2026</p>
+        </footer>
+    </div>
+
+    <!-- Modal de Iniciar Sesión (Log In) -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('login-modal')">&times;</span>
+            <h3 style="margin-top:0;"><i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión</h3>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Usuario o Correo</label>
+                    <input type="text" id="login-username" placeholder="Tu usuario" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit">Ingresar</button>
+            </form>
+            <a class="toggle-auth-link" onclick="switchModal('login-modal', 'signup-modal')">¿No tienes cuenta? Regístrate aquí</a>
+        </div>
+    </div>
+
+    <!-- Modal de Registro (Sign Up) -->
+    <div class="modal" id="signup-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('signup-modal')">&times;</span>
+            <h3 style="margin-top:0;"><i class="fa-solid fa-user-plus"></i> Crear una Cuenta</h3>
+            <form onsubmit="handleSignUp(event)">
+                <div class="form-group">
+                    <label>Nombre de Usuario</label>
+                    <input type="text" id="signup-username" placeholder="Crea un usuario" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="signup-email" placeholder="correo@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="signup-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit">Crear Cuenta</button>
+            </form>
+            <a class="toggle-auth-link" onclick="switchModal('signup-modal', 'login-modal')">¿Ya tienes cuenta? Inicia sesión aquí</a>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Información -->
+    <div class="modal" id="add-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('add-modal')">&times;</span>
+            <h3 style="margin-top:0;"><i class="fa-solid fa-pen-to-square"></i> Publicar Artículo</h3>
+            <form onsubmit="handleNewPost(event)">
+                <div class="form-group">
+                    <label>Título</label>
+                    <input type="text" id="post-title" placeholder="Ej: La Paradoja de Fermi" required>
+                </div>
+                <div class="form-group">
+                    <label>Contenido</label>
+                    <textarea id="post-content" rows="4" placeholder="Escribe el desarrollo del tema..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Publicar en la Web</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript para Interactividad -->
+    <script>
+        let currentUser = null;
+
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function switchModal(fromId, toId) {
+            closeModal(fromId);
+            openModal(toId);
+        }
+
+        function setLoggedInUser(username) {
+            currentUser = username;
+            
+            // Actualizar interfaz del menú
+            const authContainer = document.getElementById('nav-auth-container');
+            authContainer.innerHTML = `
+                <button class="btn-auth btn-auth-outline" onclick="handleLogout()">
+                    <i class="fa-solid fa-user-check"></i> ${username} (Salir)
+                </button>
+            `;
+
+            // Activar la barra de edición y botones de borrado
+            document.getElementById('admin-bar').style.display = 'flex';
+            document.getElementById('welcome-user-text').innerText = `Hola ${username}, Modo Editor Activo:`;
+            
+            const deleteBtns = document.querySelectorAll('.delete-btn');
+            deleteBtns.forEach(btn => btn.style.display = 'block');
+        }
+
+        // Manejar Login
+        function handleLogin(event) {
+            event.preventDefault();
+            const user = document.getElementById('login-username').value;
+            setLoggedInUser(user);
+            closeModal('login-modal');
+            alert(`¡Bienvenido de nuevo, ${user}!`);
+        }
+
+        // Manejar Sign Up (Registro)
+        function handleSignUp(event) {
+            event.preventDefault();
+            const user = document.getElementById('signup-username').value;
+            setLoggedInUser(user);
+            closeModal('signup-modal');
+            alert(`¡Cuenta creada con éxito! Bienvenido, ${user}.`);
+        }
+
+        // Manejar Cerrar Sesión
+        function handleLogout() {
+            currentUser = null;
+            location.reload(); // Recargar para restaurar estado inicial
+        }
+
+        // Agregar nuevo artículo
+        function handleNewPost(event) {
+            event.preventDefault();
+            const title = document.getElementById('post-title').value;
+            const content = document.getElementById('post-content').value;
+
+            const container = document.getElementById('dynamic-content-container');
+            const newCard = document.createElement('div');
+            newCard.className = 'content-card';
+            newCard.innerHTML = `
+                <button class="delete-btn" style="display: block;" onclick="deleteCard(this)"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                <h3>${title}</h3>
+                <p>${content}</p>
+            `;
+
+            container.prepend(newCard);
+            closeModal('add-modal');
+
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-content').value = '';
+        }
+
+        // Eliminar artículo
+        function deleteCard(button) {
+            if (confirm("¿Quieres borrar este artículo?")) {
+                const card = button.parentElement;
+                card.remove();
+            }
+        }
+    </script>
+</body>
+</html>
